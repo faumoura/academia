@@ -18,11 +18,17 @@ namespace Academia2023.Plugins
         public void Execute(IServiceProvider serviceProvider)
         {
             #region "Cabeçalho essenciais para o plugin"            
-            context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            serviceUsuario = serviceFactory.CreateOrganizationService(context.UserId);
-            serviceGlobal = serviceFactory.CreateOrganizationService(null);
-            ITracingService tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+            //https://docs.microsoft.com/en-us/dotnet/api/microsoft.xrm.sdk.ipluginexecutioncontext?view=dynamics-general-ce-9
+            //Contexto de execução
+            IPluginExecutionContext context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
+            //Fabrica de conexões
+            IOrganizationServiceFactory serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
+            //Service no contexto do usuário
+            serviceUsuario = serviceFactory.CreateOrganizationService(context.UserId);
+            //Service no contexto Global (usuário System)
+            serviceGlobal = serviceFactory.CreateOrganizationService(null);
+            //Trancing utilizado para reastreamento de mensagem durante o processo
+            tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
             #endregion
 
             #region "Verificador de profundidade para evitar loop"
@@ -129,8 +135,8 @@ namespace Academia2023.Plugins
             int cancelamento = contatoBanco.Contains("academia_cancelamentosdealugueis") ? contatoBanco.GetAttributeValue<int>("academia_cancelamentosdealugueis") : 0;
 
             contatoAtualizar["academia_cancelamentosdealugueis"] = cancelamento + 1;
-
             serviceUsuario.Update(contatoAtualizar);
+            tracing.Trace("Valor do cancelamento:", cancelamento + 1);
         }
     }
 }
