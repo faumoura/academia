@@ -1,6 +1,6 @@
 ﻿if (typeof (Academia) == "undefined") { Academia = {}; }
 
-Academia.Conta = {
+Academia.AluguelDeFilmes = {
     //definicao de contexto
     formContext: {},
     saveContext: {},
@@ -17,37 +17,37 @@ Academia.Conta = {
     campoNome: "name",
 
     OnLoad: function (executionContext) {
-        Academia.Conta.formContext = executionContext.getFormContext();
-        Academia.Conta.OnChange();
+        Academia.AluguelDeFilmes.formContext = executionContext.getFormContext();
+        Academia.AluguelDeFilmes.OnChange();
     },
 
     /**
     * Função responsável pela configuração dos eventos de modificações dos campos, ela deve sempre ser chamada no carregamento da página
     */
     OnChange: function (formContext) {
-        Academia.Conta.formContext.getAttribute(Academia.Conta.campoCnpj).addOnChange(Academia.Conta.ConsultarCnpj);
+        Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoCnpj).addOnChange(Academia.AluguelDeFilmes.ConsultarCnpj);
     },
 
     OnSave: function (formContext) {
-        Academia.Conta.saveContext = executionContext.getFormContext();
+        Academia.AluguelDeFilmes.saveContext = executionContext.getFormContext();
     },
 
     //https://developers.receitaws.com.br/#/operations/queryCNPJFree documentacao
     ConsultarCnpj: function () {
 
-        if (Academia.Conta.formContext.ui.getFormType() !== 1)
+        if (Academia.AluguelDeFilmes.formContext.ui.getFormType() !== 1)
             return;
 
         let urlFlow = "https://prod-07.brazilsouth.logic.azure.com:443/workflows/8589639552014088a21076c6d96b003e/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Uwjhr0tiETfIxeUWOv0JWj3v43xNyX1slMtwWEo2IJ0";
         try {
-            let cnpj = Academia.Conta.formContext.getAttribute(Academia.Conta.campoCnpj).getValue();
+            let cnpj = Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoCnpj).getValue();
             cnpj = cnpj.replace(/\D/g, "");
 
-            if (Academia.Conta.ValidarCnpj(cnpj)) {
-                Academia.Conta.formContext.getControl(Academia.Conta.campoCnpj).clearNotification("cnpjErro");
+            if (Academia.AluguelDeFilmes.ValidarCnpj(cnpj)) {
+                Academia.AluguelDeFilmes.formContext.getControl(Academia.AluguelDeFilmes.campoCnpj).clearNotification("cnpjErro");
             }
             else {
-                Academia.Conta.formContext.getControl(Academia.Conta.campoCnpj).setNotification("cnpj inválido!", "cnpjErro");
+                Academia.AluguelDeFilmes.formContext.getControl(Academia.AluguelDeFilmes.campoCnpj).setNotification("cnpj inválido!", "cnpjErro");
                 return;
             }
 
@@ -67,13 +67,13 @@ Academia.Conta = {
             xhttp.send(json);
 
             console.log(result);
-            Academia.Conta.formContext.getAttribute(Academia.Conta.campoNome).setValue(result.nome);
-            Academia.Conta.formContext.getAttribute(Academia.Conta.campoTel).setValue(result.telefone);
-            Academia.Conta.formContext.getAttribute(Academia.Conta.campoCapital).setValue(parseFloat(result.capital_social));
-            Academia.Conta.formContext.getAttribute(Academia.Conta.campoRua).setValue(result.logradouro);
-            Academia.Conta.formContext.getAttribute(Academia.Conta.campoCidade).setValue(result.municipio);
-            Academia.Conta.formContext.getAttribute(Academia.Conta.campoEstado).setValue(result.uf);
-            Academia.Conta.formContext.getAttribute(Academia.Conta.campoCep).setValue(result.cep);
+            Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoNome).setValue(result.nome);
+            Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoTel).setValue(result.telefone);
+            Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoCapital).setValue(parseFloat(result.capital_social));
+            Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoRua).setValue(result.logradouro);
+            Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoCidade).setValue(result.municipio);
+            Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoEstado).setValue(result.uf);
+            Academia.AluguelDeFilmes.formContext.getAttribute(Academia.AluguelDeFilmes.campoCep).setValue(result.cep);
             Xrm.Utility.closeProgressIndicator();
         } catch (error) {
             console.log(error);
